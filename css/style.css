@@ -1,0 +1,47 @@
+body {
+	min-height: calc(100vh - 100px);
+	min-width: 100%;
+	min-height: 100vh;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background: 95% 90% no-repeat url(https://audreyhossepian.fr/img/logo.png),
+		center / cover url(../img/bg.jpg);
+	font-family: Arial, Helvetica, sans-serif;
+	color: white;
+}
+
+.hide {
+	display: none;
+}
+
+header,
+ol {
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.7);
+	padding: 30px;
+}
+
+ol {
+	text-align-last: left;
+	padding-left: 50px;
+	line-height: 170%;
+}
+
+ul.list {
+	margin-top: 50px;
+	padding-left: 0;
+	list-style: none;
+	display: flex;
+	gap: 50px;
+}
+ul.list li a {
+	background-color: #411e0b;
+	border: 10px groove #e8cc6b;
+	padding: 50px 20px;
+	display: inline-block;
+	color: white;
+	text-decoration: none;
+}
