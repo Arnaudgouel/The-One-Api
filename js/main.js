@@ -1,86 +1,19 @@
-
-
 const urlOneApi = "https://the-one-api.dev/v2/";
 const booksUrl = urlOneApi + "book";
 
-let pathName = "";
-console.log(window.location);
+let pathName, searchTerm = "";
 
 document.addEventListener("DOMContentLoaded", checkUrl);
 
-const fetchTypes = {
-  allBooks: "allBooks",
-  bookChapters: "bookChapters",
-  bookName: "bookName",
-}
-
-
 function checkUrl() {
   pathName = window.location.pathname.replace("/", "");
+  searchTerm = window.location.search.replace("?id=", "");
   if ('book.html' == pathName) {
-    getBookChapters();
-    getBookName();
+    fetchApi(booksUrl + "/" + searchTerm + "/chapter");
+    fetchApi(booksUrl + "/" + searchTerm);
   } else {
-    getBooks();
+    fetchApi(booksUrl);
   }
-}
-
-function getBooks() {
-    fetch(booksUrl, {
-        method: "GET",
-    })
-    .then(response => response.json())
-    .then(json => {
-        let datas = json.docs;
-        let output = "";
-        datas.forEach((book) => {
-            output += `
-                <li>
-                    <a href="book.html?id=${book._id}">${book.name}</a>
-                </li>
-            `;
-        });
-        document.querySelector("#content").innerHTML = `
-          <ul class="list">
-            ${output}
-          </ul>
-          `;
-    })
-    .catch(error => console.log(error));
-}
-
-function getBookChapters() {
-    const id = window.location.search.replace("?id=", "");
-    fetch(booksUrl + "/" + id + "/chapter", {
-        method: "GET",
-    })
-    .then(response => response.json())
-    .then(json => {
-        let output = "";
-        let datas = json.docs;
-        datas.forEach((chapter) => {
-          output += `
-              <li>${chapter.chapterName}</li>
-          `;
-        });
-        document.querySelector("#content").innerHTML = `
-          <ol>
-            ${output}
-          </ol>
-        `;
-    })
-    .catch(error => console.log(error));
-}
-
-function getBookName() {
-    const id = window.location.search.replace("?id=", "");
-    fetch(booksUrl + "/" + id, {
-        method: "GET",
-    })
-    .then(response => response.json())
-    .then(json => {
-        document.querySelector("h1").innerHTML = json.docs[0].name;
-    })
 }
 
 function fetchApi(url) {
@@ -90,21 +23,36 @@ function fetchApi(url) {
     .then(response => response.json())
     .then(json => {
         let datas = json.docs;
-        let output = "";
-        if (datas.length > 0) {
-            datas.forEach((book) => {
-                output += `
-                    <li>
-                        <a href="book.html?id=${book._id}">${book.name}</a>
-                    </li>
-                `;
-            });
+        let output = "";        
+        if (datas.length > 1) {
+          datas.forEach((data) => {
+            if(pathName == "book.html") {
+              output += `
+                <li>${data.chapterName}</li>
+              `;
+            } else {
+              output += `
+                <li>
+                  <a href="book.html?id=${data._id}">${data.name}</a>
+                </li>
+              `;
+            }
+          });
+          if (pathName == "book.html") {
+            document.querySelector("#content").innerHTML = `
+              <ol>
+                ${output}
+              </ol>
+            `;    
+          } else {
             document.querySelector("#content").innerHTML = `
               <ul class="list">
                 ${output}
               </ul>
-              `;
+            `;
+          }
+        } else {
+            document.querySelector("h1").innerHTML = datas[0].name;
         }
-        console.log(json);
     })
 }
